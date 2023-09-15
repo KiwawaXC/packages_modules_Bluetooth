@@ -215,6 +215,13 @@ public class AdapterService extends Service {
 
     public static final String ACTIVITY_ATTRIBUTION_NO_ACTIVE_DEVICE_ADDRESS =
             "no_active_device_address";
+    /**
+     * Connection state bitmask as returned by getConnectionState.
+     */
+    public static final int CONNECTION_STATE_DISCONNECTED = 0;
+    public static final int CONNECTION_STATE_CONNECTED = 1;
+    public static final int CONNECTION_STATE_ENCRYPTED_BREDR = 2;
+    public static final int CONNECTION_STATE_ENCRYPTED_LE = 4;
 
     // Report ID definition
     public enum BqrQualityReportId {
@@ -2418,9 +2425,10 @@ public class AdapterService extends Service {
         public int getConnectionStateWithAttribution(
                 BluetoothDevice device, AttributionSource attributionSource) {
             AdapterService service = getService();
-            if (service == null || !Utils.checkConnectPermissionForDataDelivery(
-                    service, attributionSource, "AdapterService getConnectionState")) {
-                return BluetoothProfile.STATE_DISCONNECTED;
+            if (service == null
+                    || !Utils.checkConnectPermissionForDataDelivery(
+                            service, attributionSource, "AdapterService getConnectionState")) {
+                return CONNECTION_STATE_DISCONNECTED;
             }
 
             return service.getConnectionState(device);
