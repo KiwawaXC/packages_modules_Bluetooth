@@ -335,17 +335,21 @@ public class BassClientStateMachineTest {
         // Make bluetoothGatt non-null so state will transit
         mBassClientStateMachine.mBluetoothGatt = Mockito.mock(
                 BassClientStateMachine.BluetoothGattTestableWrapper.class);
-        mBassClientStateMachine.mBroadcastScanControlPoint = new BluetoothGattCharacteristic(
-                BassConstants.BASS_BCAST_AUDIO_SCAN_CTRL_POINT,
-                BluetoothGattCharacteristic.PROPERTY_READ,
-                BluetoothGattCharacteristic.PERMISSION_READ);
+        mBassClientStateMachine.mBroadcastScanControlPoint =
+                new BluetoothGattCharacteristic(
+                        BassConstants.BASS_BCAST_AUDIO_SCAN_CTRL_POINT,
+                        BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE
+                                | BluetoothGattCharacteristic.PROPERTY_WRITE,
+                        BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED);
 
         sendMessageAndVerifyTransition(
                 mBassClientStateMachine.obtainMessage(
                         READ_BASS_CHARACTERISTICS,
-                        new BluetoothGattCharacteristic(UUID.randomUUID(),
-                                BluetoothGattCharacteristic.PROPERTY_READ,
-                                BluetoothGattCharacteristic.PERMISSION_READ)),
+                        new BluetoothGattCharacteristic(
+                                UUID.randomUUID(),
+                                BluetoothGattCharacteristic.PROPERTY_READ
+                                        | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                                BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED)),
                 BassClientStateMachine.ConnectedProcessing.class);
         sendMessageAndVerifyTransition(
                 mBassClientStateMachine.obtainMessage(GATT_TXN_PROCESSED),
@@ -356,9 +360,11 @@ public class BassClientStateMachineTest {
         sendMessageAndVerifyTransition(
                 mBassClientStateMachine.obtainMessage(
                         READ_BASS_CHARACTERISTICS,
-                        new BluetoothGattCharacteristic(UUID.randomUUID(),
-                                BluetoothGattCharacteristic.PROPERTY_READ,
-                                BluetoothGattCharacteristic.PERMISSION_READ)),
+                        new BluetoothGattCharacteristic(
+                                UUID.randomUUID(),
+                                BluetoothGattCharacteristic.PROPERTY_READ
+                                        | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                                BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED)),
                 BassClientStateMachine.ConnectedProcessing.class);
         sendMessageAndVerifyTransition(
                 mBassClientStateMachine.obtainMessage(GATT_TXN_TIMEOUT),
@@ -394,16 +400,20 @@ public class BassClientStateMachineTest {
         when(btGatt.getService(BassConstants.BASS_UUID)).thenReturn(gattService);
 
         List<BluetoothGattCharacteristic> characteristics = new ArrayList<>();
-        BluetoothGattCharacteristic scanControlPoint = new BluetoothGattCharacteristic(
-                BassConstants.BASS_BCAST_AUDIO_SCAN_CTRL_POINT,
-                BluetoothGattCharacteristic.PROPERTY_READ,
-                BluetoothGattCharacteristic.PERMISSION_READ);
+        BluetoothGattCharacteristic scanControlPoint =
+                new BluetoothGattCharacteristic(
+                        BassConstants.BASS_BCAST_AUDIO_SCAN_CTRL_POINT,
+                        BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE
+                                | BluetoothGattCharacteristic.PROPERTY_WRITE,
+                        BluetoothGattCharacteristic.PERMISSION_WRITE_ENCRYPTED);
         characteristics.add(scanControlPoint);
 
-        BluetoothGattCharacteristic bassCharacteristic = new BluetoothGattCharacteristic(
-                UUID.randomUUID(),
-                BluetoothGattCharacteristic.PROPERTY_READ,
-                BluetoothGattCharacteristic.PERMISSION_READ);
+        BluetoothGattCharacteristic bassCharacteristic =
+                new BluetoothGattCharacteristic(
+                        UUID.randomUUID(),
+                        BluetoothGattCharacteristic.PROPERTY_READ
+                                | BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                        BluetoothGattCharacteristic.PERMISSION_READ_ENCRYPTED);
         characteristics.add(bassCharacteristic);
 
         when(gattService.getCharacteristics()).thenReturn(characteristics);
