@@ -55,7 +55,6 @@
 #include "btif_sock.h"
 #include "btif_sock_util.h"
 #include "btif_util.h"
-#include "osi/include/socket_utils/sockets.h"
 
 #define asrt(s)                                                              \
   do {                                                                       \
