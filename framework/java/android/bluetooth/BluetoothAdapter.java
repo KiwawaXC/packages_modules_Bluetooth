@@ -3908,11 +3908,13 @@ public final class BluetoothAdapter {
                     try {
                         mService = null;
                         mLeScanClients.clear();
-                        if (mBluetoothLeAdvertiser != null) {
-                            mBluetoothLeAdvertiser.cleanup();
-                        }
-                        if (mBluetoothLeScanner != null) {
-                            mBluetoothLeScanner.cleanup();
+                        synchronized (mLock) {
+                            if (mBluetoothLeAdvertiser != null) {
+                                mBluetoothLeAdvertiser.cleanup();
+                            }
+                            if (mBluetoothLeScanner != null) {
+                                mBluetoothLeScanner.cleanup();
+                            }
                         }
                     } finally {
                         l.unlock();
